@@ -1,0 +1,46 @@
+/* src/index.css */
+
+/* Tailwind v4 single import */
+@import "tailwindcss";
+
+/* Define your design tokens here (v4-native) */
+@theme {
+  --color-brand-indigo:    #1e1b4b;
+  --color-brand-indigo2:   #3730a3;
+  --color-brand-gold:      #f59e0b;
+  --color-brand-gold2:     #fbbf24;
+  --color-brand-base:      #0b1020;
+
+  /* The two tokens your UI uses that are currently "unknown": */
+  --color-brand-card:      rgba(255,255,255,0.08);
+  --color-brand-border:    rgba(255,255,255,0.12);
+
+  /* Severity colors for Alerts */
+  --color-sev-critical:    #ef4444;
+  --color-sev-high:        #f59e0b;
+  --color-sev-medium:      #eab308;
+  --color-sev-ok:          #22c55e;
+}
+
+/* Optional global page BG */
+html, body, #root {
+  height: 100%;
+  background:
+    radial-gradient(1200px 800px at 10% -10%, #2a2a72 0%, rgba(10,12,28,0) 60%),
+    radial-gradient(1200px 800px at 110% 110%, #501f68 0%, rgba(10,12,28,0) 60%),
+    var(--color-brand-base);
+  color: #e5e7eb;
+}
+
+/* v4 way to define a “utility group” you can reuse */
+@utility glass {
+  @apply bg-brand-card backdrop-blur-xl border border-brand-border rounded-2xl;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+}
+
+/* Nice underline for page headers */
+.h-underline {
+  background: linear-gradient(90deg, transparent, var(--color-brand-gold) 30%, var(--color-brand-gold2) 70%, transparent);
+  height: 2px;
+  border-radius: 9999px;
+}
