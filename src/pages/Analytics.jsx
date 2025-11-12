@@ -4,16 +4,24 @@ import {
   ResponsiveContainer, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend,
   BarChart, Bar, PieChart, Pie, Cell,
 } from 'recharts';
+import React from "react";
 
 const PIE_COLORS = ['#60a5fa', '#34d399', '#fbbf24', '#f472b6', '#22c55e'];
 
-export default function Analytics() {
+function Analytics() {
   const [rows, setRows] = useState([]);
 
   useEffect(() => {
-    fetch('http://localhost:8080/api/analytics/oee')
-      .then((r) => r.json())
-      .then((d) => setRows(d.data || []));
+    const fetchAnalytics = async () => {
+      try {
+        const res = await fetch(`${import.meta.env.VITE_API_URL}/api/analytics/oee`);
+        const data = await res.json();
+        setRows(data.data || []);
+      } catch (err) {
+        console.error("Failed to fetch analytics:", err);
+      }
+    };
+    fetchAnalytics();
   }, []);
 
   const lineData = rows.map((r) => ({
@@ -40,9 +48,10 @@ export default function Analytics() {
         and styled to the indigo–gold theme."
       />
 
+      {/* LINE CHART */}
       <div className="glass p-4 md:p-6">
         <h3 className="font-semibold mb-3">OEE Components — Trend</h3>
-        <div className="h-72">
+        <div className="h-72 min-h-[280px] w-full">
           <ResponsiveContainer width="100%" height="100%">
             <LineChart data={lineData}>
               <CartesianGrid stroke="rgba(255,255,255,.08)" />
@@ -58,10 +67,12 @@ export default function Analytics() {
         </div>
       </div>
 
+      {/* BAR + PIE CHARTS */}
       <div className="grid md:grid-cols-2 gap-6 mt-6">
+        {/* BAR CHART */}
         <div className="glass p-4 md:p-6">
           <h3 className="font-semibold mb-3">Overall OEE — Comparison</h3>
-          <div className="h-72">
+          <div className="h-72 min-h-[280px] w-full">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={barData}>
                 <CartesianGrid stroke="rgba(255,255,255,.08)" />
@@ -74,44 +85,43 @@ export default function Analytics() {
           </div>
         </div>
 
+        {/* PIE CHART */}
         <div className="glass p-4 md:p-6 text-white">
-  <h3 className="font-semibold mb-3 text-brand-gold text-lg tracking-wide">
-    OEE Share — Pie
-  </h3>
-
-  <div className="h-72">
-    <ResponsiveContainer width="100%" height="100%">
-      <PieChart>
-        {/* Tooltip with brighter text and semi-transparent background */}
-        <Tooltip
-          contentStyle={{
-            background: "rgba(40,40,60,0.95)",
-            border: "1px solid rgba(255,255,255,0.2)",
-            color: "#f3f4f6", // light gray text
-            borderRadius: "8px",
-          }}
-          itemStyle={{
-            color: "#fefce8", // soft yellow for tooltip values
-          }}
-        />
-
-        <Pie
-          data={pieData}
-          dataKey="value"
-          nameKey="name"
-          outerRadius={110}
-          label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
-          labelStyle={{ fill: "#f9fafb", fontWeight: "500" }}
-        >
-          {pieData.map((_, i) => (
-            <Cell key={i} fill={PIE_COLORS[i % PIE_COLORS.length]} stroke="#0b1020" strokeWidth={2} />
-          ))}
-        </Pie>
-      </PieChart>
-    </ResponsiveContainer>
-  </div>
-</div>
+          <h3 className="font-semibold mb-3 text-brand-gold text-lg tracking-wide">
+            OEE Share — Pie
+          </h3>
+          <div className="h-72 min-h-[280px] w-full">
+            <ResponsiveContainer width="100%" height="100%">
+              <PieChart>
+                <Tooltip
+                  contentStyle={{
+                    background: "rgba(40,40,60,0.95)",
+                    border: "1px solid rgba(255,255,255,0.2)",
+                    color: "#f3f4f6",
+                    borderRadius: "8px",
+                  }}
+                  itemStyle={{
+                    color: "#fefce8",
+                  }}
+                />
+                <Pie
+                  data={pieData}
+                  dataKey="value"
+                  nameKey="name"
+                  outerRadius={110}
+                  label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                >
+                  {pieData.map((_, i) => (
+                    <Cell key={i} fill={PIE_COLORS[i % PIE_COLORS.length]} stroke="#0b1020" strokeWidth={2} />
+                  ))}
+                </Pie>
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
       </div>
     </div>
   );
 }
+
+export default Analytics;

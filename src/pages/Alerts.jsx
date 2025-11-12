@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import PageHeader from '../components/PageHeader';
+import React from "react";
 
 function sevCls(sev) {
   if (sev === 'CRITICAL') return 'bg-sev-critical/20 border-sev-critical';
@@ -8,14 +9,21 @@ function sevCls(sev) {
   return 'bg-sev-ok/20 border-sev-ok';
 }
 
-export default function Alerts() {
+function Alerts() {
   const [alerts, setAlerts] = useState([]);
   const [q, setQ] = useState('');
 
   useEffect(() => {
-    fetch('http://localhost:8080/api/alerts')
-      .then((r) => r.json())
-      .then((d) => setAlerts(d.data || []));
+    const fetchAlerts = async () => {
+      try {
+        const res = await fetch(`${import.meta.env.VITE_API_URL}/api/alerts`);
+        const data = await res.json();
+        setAlerts(data.data || []);
+      } catch (err) {
+        console.error("Failed to fetch alerts:", err);
+      }
+    };
+    fetchAlerts();
   }, []);
 
   const filtered = useMemo(() => {
@@ -56,3 +64,5 @@ export default function Alerts() {
     </div>
   );
 }
+
+export default Alerts;

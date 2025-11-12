@@ -1,5 +1,8 @@
 import { Link } from 'react-router-dom';
 import PageHeader from '../components/PageHeader';
+import _api from "@/api.js";
+import React from "react";
+// import axios from "axios";
 
 const features = [
   { to: '/inventory', title: 'Inventory', desc: 'Live stock, zones, shelves, pricing', icon: '📦' },
@@ -7,7 +10,7 @@ const features = [
   { to: '/alerts', title: 'Alerts', desc: 'Instant low-OEE & low-stock notifications', icon: '⚠️' },
 ];
 
-export default function Dashboard() {
+function Dashboard() {
   return (
     <div className="animate-slideUp">
       <PageHeader
@@ -33,3 +36,5 @@ export default function Dashboard() {
     </div>
   );
 }
+
+export default Dashboard;
